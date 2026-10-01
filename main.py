@@ -1,6 +1,7 @@
 import os
 import io
 from fastapi import FastAPI, HTTPException, File, UploadFile
+from fastapi.responses import StreamingResponse, Response
 import PyPDF2
 import docx
 from fastapi.middleware.cors import CORSMiddleware
@@ -46,6 +47,9 @@ class ChatRequest(BaseModel):
     chat_history: list[Message] = []
     new_question: str | None = None
     complexity: str = "5-year-old"
+
+class ExportRequest(BaseModel):
+    text: str
 
 def get_system_instruction(complexity: str):
     return f"""
@@ -131,6 +135,30 @@ async def upload_document(file: UploadFile = File(...)):
     except Exception as e:
         print(f"Error parsing document: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to parse document: {str(e)}")
+
+@app.post("/export-docx")
+async def export_docx(request: ExportRequest):
+    try:
+        doc = docx.Document()
+        doc.add_heading("Layman Lens Document", level=1)
+        
+        for paragraph in request.text.split('\n'):
+            if paragraph.strip():
+                doc.add_paragraph(paragraph.strip())
+                
+        # Save to BytesIO
+        file_stream = io.BytesIO()
+        doc.save(file_stream)
+        file_stream.seek(0)
+        
+        return Response(
+            content=file_stream.getvalue(),
+            media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            headers={"Content-Disposition": 'attachment; filename="simplified_document.docx"'}
+        )
+    except Exception as e:
+        print(f"Error exporting docx: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to export document: {str(e)}")
 
 # Mount static files (HTML, JS, CSS) at the root
 app.mount("/", StaticFiles(directory=".", html=True), name="static")

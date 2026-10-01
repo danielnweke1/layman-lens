@@ -79,6 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
         modules: { toolbar: false }
     });
     const clearBtn = document.getElementById('clear-btn');
+    const exportDocxBtn = document.getElementById('export-docx-btn');
     const floatingBtn = document.getElementById('floating-action-btn');
     const explainBtn = document.getElementById('explain-btn');
     const sidebar = document.getElementById('sidebar-pane');
@@ -259,6 +260,45 @@ Consequently, existential anxiety (Angst) is not viewed as a psychological patho
             uploadPdfBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px; display: inline-block; vertical-align: text-bottom;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><line x1="9" y1="15" x2="15" y2="15"></line></svg> Upload Doc/PDF';
             uploadPdfBtn.disabled = false;
             pdfUpload.value = ''; // Reset input
+        }
+    });
+
+    // Export DOCX logic
+    exportDocxBtn.addEventListener('click', async () => {
+        const text = quill.getText().trim();
+        if (!text) {
+            alert("The document is empty.");
+            return;
+        }
+        
+        exportDocxBtn.disabled = true;
+        const originalContent = exportDocxBtn.innerHTML;
+        exportDocxBtn.innerHTML = "Processing...";
+        
+        try {
+            const response = await fetch('/export-docx', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text: text })
+            });
+            
+            if (!response.ok) throw new Error("Failed to export.");
+            
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = "simplified_document.docx";
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            a.remove();
+        } catch (error) {
+            console.error(error);
+            alert("Error exporting document.");
+        } finally {
+            exportDocxBtn.disabled = false;
+            exportDocxBtn.innerHTML = originalContent;
         }
     });
 
