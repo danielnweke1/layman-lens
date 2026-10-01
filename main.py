@@ -89,7 +89,7 @@ async def simplify_text_stream(request: ChatRequest):
                 messages.append({"role": "user", "content": request.new_question})
                 
             response = openai_client.chat.completions.create(
-                model="gpt-4o-mini",
+                model="gpt-4o",
                 messages=messages,
                 temperature=0.3,
                 stream=True

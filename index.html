@@ -20,8 +20,21 @@
 
         <div class="landing-content">
             <div class="landing-badge">Layman Lens Engine 2.0</div>
-            <h1 class="landing-title">The <span class="text-gradient">Layman Lens.</span></h1>
+            <h1 class="landing-title">The <span class="text-gradient">Layman Lens</span>.</h1>
+            <h2 style="font-family: 'Outfit', sans-serif; font-size: 32px; color: #fff; margin-bottom: 16px; font-weight: 600;">Decode <span id="rotating-text" style="color: #a855f7;">Complex Docs</span>.</h2>
             <p class="landing-subtitle">Highlight dense jargon. Adjust the slider. Get it explained instantly in plain English.</p>
+            
+            <div class="hero-demo">
+                <div class="demo-box">
+                    <div class="demo-header">
+                        <span id="demo-label">Before (Jargon)</span>
+                        <button id="demo-toggle" class="btn-ghost" style="border-color: var(--accent-color); color: #fff; background: rgba(99, 102, 241, 0.2);">See Magic</button>
+                    </div>
+                    <div id="demo-content" class="demo-text">
+                        "The party of the first part hereby agrees to indemnify and hold harmless the party of the second part from any and all claims, damages, or liabilities arising out of the aforementioned breach of fiduciary duty."
+                    </div>
+                </div>
+            </div>
             
             <div class="landing-feature-cards">
                 <div class="feature-card">
@@ -77,14 +90,6 @@
                 <div class="pane-header">
                     <div class="pane-title-group">
                         <h2>Source Document</h2>
-                        <div class="preset-buttons">
-                            <button class="preset-btn" data-preset="medical">Medical</button>
-                            <button class="preset-btn" data-preset="legal">Legal</button>
-                            <button class="preset-btn" data-preset="tech">Tech</button>
-                            <button class="preset-btn" data-preset="finance">Finance</button>
-                            <button class="preset-btn" data-preset="science">Science</button>
-                            <button class="preset-btn" data-preset="philosophy">Philosophy</button>
-                        </div>
                     </div>
                     <div class="pane-actions" style="display: flex; gap: 8px;">
                         <input type="file" id="pdf-upload" accept=".pdf, .docx" style="display: none;">
@@ -92,6 +97,15 @@
                         <button id="export-docx-btn" class="btn-ghost"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px; display: inline-block; vertical-align: text-bottom;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg> Export DOCX</button>
                         <button id="clear-btn" class="btn-ghost">Clear</button>
                     </div>
+                </div>
+                <div class="pane-toolbar" style="padding: 10px 24px; border-bottom: 1px solid var(--border-color); display: flex; gap: 8px; align-items: center; background: rgba(0,0,0,0.1);">
+                    <span style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; margin-right: 8px;">Demo Presets:</span>
+                    <button class="preset-btn" data-preset="medical">Medical</button>
+                    <button class="preset-btn" data-preset="legal">Legal</button>
+                    <button class="preset-btn" data-preset="tech">Tech</button>
+                    <button class="preset-btn" data-preset="finance">Finance</button>
+                    <button class="preset-btn" data-preset="science">Science</button>
+                    <button class="preset-btn" data-preset="philosophy">Philosophy</button>
                 </div>
                 <div class="editor-container">
                     <div id="source-editor"></div>

@@ -13,7 +13,7 @@ Have you ever stared at a 50-page legal contract or a dense medical study and wi
 - **Dynamic Audience Slider:** Tune your explanations. Want the explanation tuned for a 5-year-old? Or a College Grad? You have full control.
 - **Magic Replace (Rich Text):** Don't just read the explanation. Click "Replace in Document" to physically swap out the confusing jargon with the simplified AI version permanently using the built-in rich text editor.
 - **Context-Aware Follow-ups:** Still confused? Ask follow-up questions in the chat sidebar.
-- **Lightning Fast Streams:** Powered by OpenAI's `gpt-4o-mini` model for instant, real-time chunk streaming.
+- **Lightning Fast Streams:** Powered by OpenAI's flagship `gpt-4o` model for deep comprehension and real-time chunk streaming.
 - **Usage Dashboard:** A beautifully mocked SaaS settings tab with real-time browser-synced API usage tracking.
 
 ## Tech Stack
@@ -21,7 +21,7 @@ Have you ever stared at a 50-page legal contract or a dense medical study and wi
 - **Frontend:** Vanilla HTML, JS, and custom CSS (Glassmorphism, CSS Grid/Flexbox).
 - **Editor:** Quill.js for rich-text manipulation and exact cursor boundary replacement.
 - **Backend:** Python, FastAPI, and Uvicorn.
-- **AI Engine:** OpenAI ChatGPT API (`gpt-4o-mini`).
+- **AI Engine:** OpenAI ChatGPT API (`gpt-4o`).
 - **Parsing Utilities:** `PyPDF2` (PDFs) and `python-docx` (Word Documents).
 
 ## 🚀 Local Setup & Installation

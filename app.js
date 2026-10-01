@@ -2,6 +2,71 @@ document.addEventListener('DOMContentLoaded', () => {
     // Landing Page Logic
     const landingPage = document.getElementById('landing-page');
     const launchBtn = document.getElementById('launch-btn');
+    const rotatingText = document.getElementById('rotating-text');
+    const demoToggle = document.getElementById('demo-toggle');
+    const demoContent = document.getElementById('demo-content');
+    const demoLabel = document.getElementById('demo-label');
+
+    // Typewriter Hero Text
+    if (rotatingText) {
+        const words = ["Legal Contracts", "Medical Records", "Academic Papers", "Complex Docs"];
+        let wordIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+        
+        function typeWriter() {
+            const currentWord = words[wordIndex];
+            
+            if (isDeleting) {
+                rotatingText.innerText = currentWord.substring(0, charIndex - 1);
+                charIndex--;
+            } else {
+                rotatingText.innerText = currentWord.substring(0, charIndex + 1);
+                charIndex++;
+            }
+            
+            let typingSpeed = isDeleting ? 40 : 80; // Speed of typing and deleting
+            
+            if (!isDeleting && charIndex === currentWord.length) {
+                typingSpeed = 2500; // Pause when word is complete
+                isDeleting = true;
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                wordIndex = (wordIndex + 1) % words.length;
+                typingSpeed = 500; // Pause before typing new word
+            }
+            
+            setTimeout(typeWriter, typingSpeed);
+        }
+        
+        rotatingText.innerText = ""; // Clear initial text
+        setTimeout(typeWriter, 1000); // Start after a short delay
+    }
+
+    // Interactive Demo Toggle
+    if (demoToggle) {
+        const jargonText = '"The party of the first part hereby agrees to indemnify and hold harmless the party of the second part from any and all claims, damages, or liabilities arising out of the aforementioned breach of fiduciary duty."';
+        const simpleText = '"Person A promises to protect Person B and pay for any problems or lawsuits caused if Person A fails to do their job properly."';
+        
+        demoToggle.addEventListener('click', () => {
+            if (demoContent.classList.contains('decoded')) {
+                demoContent.classList.remove('decoded');
+                demoContent.innerText = jargonText;
+                demoToggle.innerText = "See Magic";
+                demoLabel.innerText = "Before (Jargon)";
+                demoContent.style.color = "#a1a1aa";
+                demoContent.style.borderLeftColor = "#4b5563";
+            } else {
+                demoContent.classList.add('decoded');
+                demoContent.innerText = simpleText;
+                demoToggle.innerText = "Revert";
+                demoLabel.innerText = "After (5-year-old)";
+                demoContent.style.color = "#fff";
+                demoContent.style.borderLeftColor = "var(--success-color)";
+            }
+        });
+    }
+
     if (launchBtn && landingPage) {
         launchBtn.addEventListener('click', () => {
             landingPage.classList.add('fade-out');
