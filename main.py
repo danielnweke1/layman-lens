@@ -7,8 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
-from google import genai
-from google.genai import types
+import openai
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -26,18 +25,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Initialize Gemini Client
-# It automatically picks up GEMINI_API_KEY from the environment
+
+# Initialize OpenAI Client
 try:
-    api_key = os.getenv("GEMINI_API_KEY")
-    if api_key and api_key.startswith('"') and api_key.endswith('"'):
-        api_key = api_key[1:-1]
-    
-    # Pass via http_options to force x-goog-api-key header for the new AQ. key formats
-    client = genai.Client(http_options={'headers': {'x-goog-api-key': api_key}})
+    oai_key = os.getenv("OPENAI_API_KEY")
+    if oai_key and oai_key.startswith('"') and oai_key.endswith('"'):
+        oai_key = oai_key[1:-1]
+    openai_client = openai.OpenAI(api_key=oai_key) if oai_key else None
 except Exception as e:
-    print("Warning: Failed to initialize Gemini Client. Make sure GEMINI_API_KEY is set in your environment or .env file.")
-    client = None
+    print("Warning: Failed to initialize OpenAI Client. Make sure OPENAI_API_KEY is set in your environment or .env file.")
+    openai_client = None
 
 class Message(BaseModel):
     role: str
@@ -67,48 +64,42 @@ Guidelines:
 
 @app.post("/simplify-stream")
 async def simplify_text_stream(request: ChatRequest):
-    if not client:
-        raise HTTPException(status_code=500, detail="Gemini Client is not initialized.")
+    if not openai_client:
+        raise HTTPException(status_code=500, detail="OpenAI Client is not initialized.")
     
     if not request.highlighted_text:
         raise HTTPException(status_code=400, detail="No highlighted text provided.")
 
     async def generate():
         try:
-            # Build the conversation history for Gemini
-            contents = []
-            
-            # 1. Initial Prompt
+            messages = []
+            messages.append({"role": "system", "content": get_system_instruction(request.complexity)})
             initial_prompt = f"Here is the full document for context:\n{request.full_context}\n\nBased on the context above, please explain the following highlighted portion specifically for a {request.complexity}. If it's a single word, define it simply. Avoid jargon:\n\"{request.highlighted_text}\""
-            contents.append(types.Content(role="user", parts=[types.Part.from_text(text=initial_prompt)]))
+            messages.append({"role": "user", "content": initial_prompt})
             
-            # 2. Append Chat History
             for msg in request.chat_history:
-                role = "model" if msg.role == "model" else "user"
-                contents.append(types.Content(role=role, parts=[types.Part.from_text(text=msg.content)]))
-            
-            # 3. Append New Question (if any)
+                role = "assistant" if msg.role == "model" else "user"
+                messages.append({"role": role, "content": msg.content})
+                
             if request.new_question:
-                contents.append(types.Content(role="user", parts=[types.Part.from_text(text=request.new_question)]))
-
-            response = client.models.generate_content_stream(
-                model='gemini-3.8-flash',
-                contents=contents,
-                config=types.GenerateContentConfig(
-                    system_instruction=get_system_instruction(request.complexity),
-                    temperature=0.3,
-                )
+                messages.append({"role": "user", "content": request.new_question})
+                
+            response = openai_client.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=messages,
+                temperature=0.3,
+                stream=True
             )
             for chunk in response:
-                yield chunk.text
+                if chunk.choices and chunk.choices[0].delta.content:
+                    yield chunk.choices[0].delta.content
         except Exception as e:
             error_msg = str(e)
-            print(f"Error calling Gemini stream: {error_msg}")
-            
-            if "429" in error_msg or "RESOURCE_EXHAUSTED" in error_msg:
-                yield "\n\n**Too many rapid requests!** You're decoding jargon faster than the engine can process. Please wait 15 seconds and try again. ⏳"
+            print(f"Error calling openai stream: {error_msg}")
+            if "429" in error_msg or "RESOURCE_EXHAUSTED" in error_msg or "RateLimitError" in error_msg:
+                yield "\n\n**Too many rapid requests!** You're decoding jargon faster than the engine can process. Please wait 15 seconds and try again."
             elif "503" in error_msg or "UNAVAILABLE" in error_msg:
-                yield "\n\n**API Busy:** The Gemini model is currently experiencing high demand. Please try again in a few seconds. 🔄"
+                yield "\n\n**API Busy:** The model is currently experiencing high demand. Please try again in a few seconds."
             else:
                 yield f"\n\n**Error:** Failed to simplify text."
 
