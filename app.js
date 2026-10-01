@@ -243,7 +243,7 @@ Consequently, existential anxiety (Angst) is not viewed as a psychological patho
         formData.append('file', file);
 
         try {
-            const response = await fetch('http://127.0.0.1:8000/upload-document', {
+            const response = await fetch('/upload-document', {
                 method: 'POST',
                 body: formData
             });
@@ -325,7 +325,7 @@ Consequently, existential anxiety (Angst) is not viewed as a psychological patho
         try {
             incrementUsage(); // Record the request
 
-            const response = await fetch('http://127.0.0.1:8000/simplify-stream', {
+            const response = await fetch('/simplify-stream', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 

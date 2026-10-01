@@ -5,6 +5,7 @@ import PyPDF2
 import docx
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from google import genai
 from google.genai import types
@@ -139,6 +140,9 @@ async def upload_document(file: UploadFile = File(...)):
     except Exception as e:
         print(f"Error parsing document: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to parse document: {str(e)}")
+
+# Mount static files (HTML, JS, CSS) at the root
+app.mount("/", StaticFiles(directory=".", html=True), name="static")
 
 if __name__ == "__main__":
     import uvicorn
