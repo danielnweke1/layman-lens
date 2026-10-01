@@ -3,3 +3,6 @@ uvicorn
 pydantic>=2.9.0
 google-genai
 python-dotenv
+PyPDF2
+python-docx
+python-multipart
