@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Layman Lens</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.quilljs.com/1.3.6/quill.core.css" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <!-- Landing Page Overlay (Premium Overhaul) -->
+    <div id="landing-page">
+        <!-- Animated Background Elements -->
+        <div class="glow-orb orb-1"></div>
+        <div class="glow-orb orb-2"></div>
+        <div class="grid-bg"></div>
+
+        <div class="landing-content">
+            <div class="landing-badge">✨ Layman Lens Engine 2.0 is Live</div>
+            <h1 class="landing-title">The <span class="text-gradient">Layman Lens.</span></h1>
+            <p class="landing-subtitle">Highlight dense jargon. Adjust the slider. Get it explained instantly in plain English.</p>
+            
+            <div class="landing-feature-cards">
+                <div class="feature-card">
+                    <div class="fc-icon">📄</div>
+                    <h3>Import Anything</h3>
+                    <p>Upload large PDFs or paste massive documents instantly.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="fc-icon">🎚️</div>
+                    <h3>Audience Slider</h3>
+                    <p>Scale the AI's explanation from a 5-year-old to a College Grad.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="fc-icon">🪄</div>
+                    <h3>Magic Rewrite</h3>
+                    <p>Instantly swap confusing jargon with the simple explanation.</p>
+                </div>
+            </div>
+            
+            <button id="launch-btn" class="launch-btn">
+                Launch Workspace
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+            </button>
+        </div>
+    </div>
+
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="logo">
+                <div class="logo-icon"></div>
+                <h1>The Layman Lens</h1>
+            </div>
+            <nav class="nav-tabs">
+                <button id="tab-workspace" class="nav-btn active">Workspace</button>
+                <button id="tab-howitworks" class="nav-btn">How it Works</button>
+                <button id="tab-settings" class="nav-btn">Settings</button>
+            </nav>
+        </header>
+
+        <!-- Main Workspace -->
+        <main id="view-workspace" class="workspace active">
+            <!-- Floating Action Button -->
+            <div id="floating-action-btn" class="floating-action hidden">
+                <button id="explain-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.21 1.21 0 0 0 0-1.72Z"></path><path d="m14 7 3 3"></path><path d="M5 6v4"></path><path d="M19 14v4"></path><path d="M10 2v2"></path><path d="M2 10h2"></path><path d="M20 18h2"></path><path d="M14 22h2"></path></svg>
+                    Explain
+                </button>
+            </div>
+
+            <!-- Editor / Source Text Pane (Now Full Width) -->
+            <section class="pane source-pane">
+                <div class="pane-header">
+                    <div class="pane-title-group">
+                        <h2>Source Document</h2>
+                        <div class="preset-buttons">
+                            <button class="preset-btn" data-preset="medical">Medical</button>
+                            <button class="preset-btn" data-preset="legal">Legal</button>
+                            <button class="preset-btn" data-preset="tech">Tech</button>
+                            <button class="preset-btn" data-preset="finance">Finance</button>
+                            <button class="preset-btn" data-preset="science">Science</button>
+                            <button class="preset-btn" data-preset="philosophy">Philosophy</button>
+                        </div>
+                    </div>
+                    <div class="pane-actions" style="display: flex; gap: 8px;">
+                        <input type="file" id="pdf-upload" accept=".pdf, .docx" style="display: none;">
+                        <button id="upload-pdf-btn" class="btn-ghost">📁 Upload Doc/PDF</button>
+                        <button id="clear-btn" class="btn-ghost">Clear</button>
+                    </div>
+                </div>
+                <div class="editor-container">
+                    <div id="source-editor"></div>
+                </div>
+            </section>
+
+            <!-- Lens / Output Sidebar (Hidden by default) -->
+            <section id="sidebar-pane" class="sidebar hidden">
+                <div class="sidebar-header">
+                    <h2>The Lens</h2>
+                    <div class="status-indicator"></div>
+                    <button id="close-sidebar-btn" class="btn-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
+                <div class="lens-content-container">
+                    <!-- Complexity Slider -->
+                    <div class="lens-settings">
+                        <label for="complexity-slider" class="label">Target Audience: <span id="complexity-label" style="color: var(--accent-color);">5-year-old</span></label>
+                        <input type="range" id="complexity-slider" min="1" max="3" value="1" step="1">
+                    </div>
+
+                    <!-- Default State -->
+                    <div id="lens-empty" class="lens-state active">
+                        <div class="empty-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        </div>
+                        <p>Highlight text to analyze it.</p>
+                    </div>
+
+                    <!-- Loading State -->
+                    <div id="lens-loading" class="lens-state">
+                        <div class="spinner"></div>
+                        <p>Decoding jargon...</p>
+                    </div>
+
+                    <!-- Result / Chat State -->
+                    <div id="lens-result" class="lens-state chat-state">
+                        <div class="original-snippet">
+                            <span class="label">Original:</span>
+                            <p id="snippet-text"></p>
+                        </div>
+                        
+                        <div class="chat-history" id="chat-history">
+                            <div class="explanation-box ai-message">
+                                <span id="dynamic-explanation-label" class="label accent">Explained for a 5-year-old:</span>
+                                <div id="explanation-text"></div>
+                            </div>
+                        </div>
+
+                        <div class="chat-input-container">
+                            <input type="text" id="followup-input" placeholder="Still confused? Ask a follow-up...">
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- How it works View -->
+        <main id="view-howitworks" class="how-it-works-view hidden">
+            <div class="hiw-container">
+                <h2 class="hiw-title">How <span class="text-gradient">Layman Lens</span> Works</h2>
+                <div class="step-grid">
+                    <div class="step-card">
+                        <div class="step-num">1</div>
+                        <h3>Upload your Jargon</h3>
+                        <p>Paste any dense medical record, legal contract, or academic paper. Or, use the 📁 Upload PDF button to import massive documents.</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-num">2</div>
+                        <h3>Choose your Audience</h3>
+                        <p>Use the Audience Slider in the Lens. Want the explanation tuned for a 5-year-old? Or a College Grad? You have full control.</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-num">3</div>
+                        <h3>Highlight & Decode</h3>
+                        <p>Highlight any confusing phrase in the editor. Click the glowing Explain button that pops up to decode the complex instantly.</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-num">4</div>
+                        <h3>Magic Rewrite</h3>
+                        <p>Like the simple version better? Click "🪄 Replace in Document" to permanently swap out the confusing jargon with plain English.</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Settings View -->
+        <main id="view-settings" class="settings-view hidden">
+            <div class="settings-container">
+                <h2 class="settings-title">Account & Usage</h2>
+                
+                <div class="settings-grid">
+                    <!-- Usage Card -->
+                    <div class="settings-card">
+                        <h3>API Usage</h3>
+                        <div class="usage-stats">
+                            <div class="stat-item">
+                                <span class="stat-label">Words Decoded (This Month)</span>
+                                <span class="stat-value">45,210 <span class="stat-max">/ 100,000</span></span>
+                            </div>
+                            <div class="progress-bar-bg">
+                                <div class="progress-bar-fill" style="width: 45%;"></div>
+                            </div>
+                        </div>
+                        <div class="usage-stats" style="margin-top: 24px;">
+                            <div class="stat-item">
+                                <span class="stat-label">API Requests (Today)</span>
+                                <span class="stat-value"><span id="settings-usage-count">0</span> <span class="stat-max">/ 20</span></span>
+                            </div>
+                            <div class="progress-bar-bg">
+                                <div class="progress-bar-fill" id="settings-usage-bar" style="width: 0%; background: var(--success-color);"></div>
+                            </div>
+                        </div>
+                        <button class="upgrade-btn">Upgrade Plan</button>
+                    </div>
+
+                    <!-- Account Info Card -->
+                    <div class="settings-card">
+                        <h3>Account Details</h3>
+                        <div class="account-info">
+                            <div class="info-row">
+                                <span class="info-label">Plan</span>
+                                <span class="info-value badge-pro">Pro Tier</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Email</span>
+                                <span class="info-value">daniel@example.com</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Engine Version</span>
+                                <span class="info-value">Layman Lens Engine v2.0</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Billing Cycle</span>
+                                <span class="info-value">Renews Nov 1st, 2026</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Status Bar -->
+        <footer class="status-bar">
+            <div class="status-left">
+                <span id="doc-status" style="color: var(--success-color);">● Ready</span>
+                <span class="divider">|</span>
+                <span id="word-count">0 words</span>
+            </div>
+            <div class="status-right">
+                <span id="statusbar-usage" style="color: var(--accent-color); font-weight: 600;">0/20 Requests</span>
+                <span class="divider">|</span>
+                <span>Layman Lens Engine v2.0</span>
+                <span class="divider">|</span>
+                <span id="ai-status">AI Idle</span>
+            </div>
+        </footer>
+    </div>
+    
+    <!-- Load marked.js for markdown parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
