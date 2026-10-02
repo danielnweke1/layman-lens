@@ -1,7 +1,6 @@
 # 🔍 The Layman Lens
 
 > **An AI-powered IDE workspace that decodes dense legal, medical, and academic jargon into plain English in real-time.** 
-> Built for the **ShipAI Hackathon**.
 
 ![Layman Lens Demo](https://via.placeholder.com/800x450.png?text=The+Layman+Lens+Workspace)
 
